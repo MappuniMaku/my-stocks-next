@@ -1,0 +1,24 @@
+services:
+  app:
+    image: node:18-alpine
+    command: sh -c "yarn install && yarn run dev"
+    ports:
+      - "3000:3000"
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://admin:password@database:5432/my_stocks_next?schema=public
+  database:
+    image: postgres:16.2-alpine3.19
+    restart: always
+    shm_size: 128mb
+    ports:
+      - "5432:5432"
+    volumes:
+      - /docker-volumes/my-stocks-next-postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: my_stocks_next
