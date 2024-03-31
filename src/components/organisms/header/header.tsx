@@ -1,6 +1,6 @@
 import { FC } from 'react';
+import { Button } from '@atoms';
 import {
-  Button,
   Link,
   Navbar,
   NavbarBrand,
@@ -21,7 +21,7 @@ export const Header: FC = () => (
         </Link>
       </NavbarBrand>
     </NavbarContent>
-    <NavbarContent className="hidden sm:flex gap-4" justify="center">
+    <NavbarContent className="hidden gap-4 sm:flex" justify="center">
       <HeaderMenu items={menuItems} />
     </NavbarContent>
     <NavbarContent justify="end">

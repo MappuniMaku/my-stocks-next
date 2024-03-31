@@ -21,6 +21,8 @@
       "@/*": ["./src/*"],
       "@types": ["./src/types/index.ts"],
       "@types/*": ["./src/types/*"],
+      "@atoms": ["./src/components/atoms/index.ts"],
+      "@atoms/*": ["./src/components/atoms/*"],
       "@organisms": ["./src/components/organisms/index.ts"],
       "@organisms/*": ["./src/components/organisms/*"]
     }
