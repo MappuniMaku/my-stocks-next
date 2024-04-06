@@ -26,7 +26,7 @@ export const Header: FC = () => (
     </NavbarContent>
     <NavbarContent justify="end">
       <NavbarItem>
-        <Button as={Link} color="primary" href="/login" variant="flat">
+        <Button as={Link} color="primary" href="/log-in" variant="flat">
           Войти
         </Button>
       </NavbarItem>

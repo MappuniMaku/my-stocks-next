@@ -2,12 +2,12 @@
 
 import { FC } from 'react';
 import { useFormState } from 'react-dom';
-import { signUp } from '@/actions';
+import { logIn } from '@/actions';
 import { isNotEmpty } from '@/helpers';
 import { Button, Input } from '@atoms';
 
-export const SignUpForm: FC = () => {
-  const [{ errors }, submit] = useFormState(signUp, {});
+export const LogInForm: FC = () => {
+  const [{ errors }, submit] = useFormState(logIn, {});
 
   return (
     <form action={submit} className="flex flex-col gap-4">
@@ -29,7 +29,7 @@ export const SignUpForm: FC = () => {
         isInvalid={isNotEmpty(errors?.password)}
         isRequired
       />
-      <Button type="submit">Зарегистрироваться</Button>
+      <Button type="submit">Войти</Button>
     </form>
   );
 };
