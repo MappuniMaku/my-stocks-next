@@ -1,6 +1,6 @@
 services:
   app:
-    image: node:18-alpine
+    image: node:20.12.1-alpine3.18
     command: sh -c "yarn install && yarn run dev"
     ports:
       - "3000:3000"
