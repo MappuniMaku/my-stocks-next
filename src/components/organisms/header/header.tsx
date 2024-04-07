@@ -10,7 +10,7 @@ import {
   NavbarItem,
   NavbarMenuToggle,
 } from '@nextui-org/react';
-import { HeaderMenu, SidebarMenu } from './components';
+import { AccountInfo, HeaderMenu, SidebarMenu } from './components';
 import { menuItems } from './constants';
 
 export const Header: FC = async () => {
@@ -30,9 +30,9 @@ export const Header: FC = async () => {
         <HeaderMenu items={menuItems} />
       </NavbarContent>
       <NavbarContent justify="end">
-        <NavbarItem>
+        <NavbarItem className="h-fit">
           {isNotEmpty(user) ? (
-            <div>{user.username}</div>
+            <AccountInfo user={user} />
           ) : (
             <Button as={Link} color="primary" href="/log-in" variant="flat">
               Войти
