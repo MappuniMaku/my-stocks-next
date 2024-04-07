@@ -10,7 +10,7 @@ export const LogInForm: FC = () => {
   const [{ errors }, submit] = useFormState(logIn, {});
 
   return (
-    <form action={submit} className="flex flex-col gap-4">
+    <form action={submit} className="flex flex-col gap-5">
       <Input
         label="Имя пользователя"
         type="text"

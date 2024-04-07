@@ -1,15 +1,65 @@
 'use server';
 
+import { generateId } from 'lucia';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { Argon2id } from 'oslo/password';
+import { z } from 'zod';
+import { lucia } from '@/auth';
+import { prisma } from '@/db';
+import { flattenValidationErrors, isNotEmpty } from '@/helpers';
+
+type ISignUpFormFields = 'username' | 'password';
+
 interface ISignUpResult {
-  errors?: Partial<Record<'username' | 'password', string>>;
+  errors?: Partial<Record<ISignUpFormFields, string>>;
 }
 
 export const signUp = async (_: ISignUpResult, formData: FormData): Promise<ISignUpResult> => {
-  console.log('signUp action called', formData);
-  return {
-    errors: {
-      username: 'Такой пользователь уже существует',
-      password: 'Слишком короткий пароль',
+  const { username, password } = Object.fromEntries(formData.entries()) as Record<
+    ISignUpFormFields,
+    string
+  >;
+
+  const schema = z.object({
+    username: z
+      .string()
+      .min(3, 'Минимум 3 символа')
+      .max(30, 'Не более 30 символов')
+      .regex(/^[a-zA-Z0-9]+$/, 'Только латинские буквы и цифры'),
+    password: z.string().min(6, 'Минимум 6 символов').max(255, 'Слишком длинное значение'),
+  });
+
+  const validationResult = schema.safeParse({ username, password });
+
+  if (!validationResult.success) {
+    return {
+      errors: flattenValidationErrors(validationResult.error),
+    };
+  }
+
+  const hashedPassword = await new Argon2id().hash(password);
+  const userId = generateId(15);
+
+  const existingUser = await prisma.user.findFirst({ where: { username } });
+  if (isNotEmpty(existingUser)) {
+    return {
+      errors: {
+        username: 'Такой пользователь уже существует',
+      },
+    };
+  }
+
+  await prisma.user.create({
+    data: {
+      id: userId,
+      username,
+      hashedPassword,
     },
-  };
+  });
+
+  const session = await lucia.createSession(userId, {});
+  const sessionCookie = lucia.createSessionCookie(session.id);
+  cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+  return redirect('/');
 };
