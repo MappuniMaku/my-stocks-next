@@ -1,7 +1,3 @@
-import { prisma } from '@/db';
-
-export default async function HomePage() {
-  const users = await prisma.user.findMany();
-  console.log(users);
+export default function HomePage() {
   return <div>Главная</div>;
 }

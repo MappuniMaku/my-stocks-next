@@ -4,10 +4,9 @@ import { generateId } from 'lucia';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Argon2id } from 'oslo/password';
-import { z } from 'zod';
 import { lucia } from '@/auth';
 import { prisma } from '@/db';
-import { flattenValidationErrors, isNotEmpty } from '@/helpers';
+import { flattenValidationErrors, getAuthFormSchema, isNotEmpty } from '@/helpers';
 
 type ISignUpFormFields = 'username' | 'password';
 
@@ -21,16 +20,7 @@ export const signUp = async (_: ISignUpResult, formData: FormData): Promise<ISig
     string
   >;
 
-  const schema = z.object({
-    username: z
-      .string()
-      .min(3, 'Минимум 3 символа')
-      .max(30, 'Не более 30 символов')
-      .regex(/^[a-zA-Z0-9]+$/, 'Только латинские буквы и цифры'),
-    password: z.string().min(6, 'Минимум 6 символов').max(255, 'Слишком длинное значение'),
-  });
-
-  const validationResult = schema.safeParse({ username, password });
+  const validationResult = getAuthFormSchema().safeParse({ username, password });
 
   if (!validationResult.success) {
     return {

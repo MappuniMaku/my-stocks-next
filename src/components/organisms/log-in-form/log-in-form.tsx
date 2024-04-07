@@ -24,7 +24,7 @@ export const LogInForm: FC = () => {
         label="Пароль"
         type="password"
         name="password"
-        autoComplete="new-password"
+        autoComplete="password"
         errorMessage={errors?.password}
         isInvalid={isNotEmpty(errors?.password)}
         isRequired
