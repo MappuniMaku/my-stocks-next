@@ -3,7 +3,7 @@ import type { Session, User } from 'lucia';
 import { cookies } from 'next/headers';
 import { lucia } from '@/auth/auth';
 import { prisma } from '@/db';
-import { isEmpty, isNotEmpty } from '@/helpers';
+import { isEmpty } from '@/helpers';
 import { IUser } from '@types';
 
 export const getCurrentSession = cache(
