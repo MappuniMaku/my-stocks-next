@@ -1,3 +1,3 @@
 export default function HomePage() {
-  return <div>Главная</div>;
+  return <h1 className="text-3xl font-semibold">MyStocks</h1>;
 }
