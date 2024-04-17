@@ -1,6 +1,7 @@
 import { cache } from 'react';
 import type { Session, User } from 'lucia';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { lucia } from '@/auth/auth';
 import { prisma } from '@/db';
 import { isEmpty } from '@/helpers';
@@ -48,3 +49,11 @@ export const getCurrentUser = cache(async (): Promise<IUser | null> => {
     return null;
   }
 });
+
+export const redirectUnauthorizedUser = async (): Promise<void> => {
+  const { user } = await getCurrentSession();
+
+  if (isEmpty(user)) {
+    redirect('/log-in');
+  }
+};
