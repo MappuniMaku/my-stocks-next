@@ -9,7 +9,10 @@ export default async function OperationsPage() {
   await redirectUnauthorizedUser();
 
   const user = (await getCurrentUser()) as IUser;
-  const operations = await prisma.operation.findMany({ where: { userId: user.id } });
+  const operations = await prisma.operation.findMany({
+    where: { userId: user.id },
+    orderBy: { date: 'desc' },
+  });
 
   return (
     <>
@@ -17,9 +20,24 @@ export default async function OperationsPage() {
       <Button className="mt-4" color="primary" as={Link} href="/portfolio/operations/add">
         Добавить операцию
       </Button>
-      <div className="mt-4">
+      <div className="mt-6">
         {isArrayNotEmpty(operations) ? (
-          'Скоро здесь будет список операций...'
+          <ul className="flex flex-col gap-4 text-medium">
+            {operations.map((operation, i) => (
+              <li key={operation.id} className="flex gap-2">
+                <span className="font-semibold">{i + 1}.</span>
+                <span className="flex flex-col gap-1">
+                  <span>
+                    <span className="font-medium">Дата:</span> {operation.date.toLocaleDateString()}
+                  </span>
+                  <span>
+                    <span className="font-medium">Сумма:</span> {operation.amount}{' '}
+                    {operation.currency}
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ul>
         ) : (
           <p className="text-medium">У вас пока нет операций</p>
         )}
