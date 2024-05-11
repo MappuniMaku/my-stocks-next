@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters"]
 }
 
@@ -9,15 +9,25 @@ datasource db {
 }
 
 model User {
-  id             String    @id
-  username       String    @unique
+  id             String      @id
+  username       String      @unique
   hashedPassword String
   sessions       Session[]
+  operations     Operation[]
 }
 
 model Session {
   id        String   @id
   userId    String
   expiresAt DateTime
-  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Operation {
+  id       String   @id @default(uuid())
+  date     DateTime
+  amount   Float
+  currency String
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
