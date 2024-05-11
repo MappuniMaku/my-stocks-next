@@ -12,7 +12,7 @@ export default async function OperationsPage() {
   const operations = await prisma.operation.findMany({ where: { userId: user.id } });
 
   return (
-    <div>
+    <>
       <h1 className="text-3xl font-semibold">Операции</h1>
       <Button className="mt-4" color="primary" as={Link} href="/portfolio/operations/add">
         Добавить операцию
@@ -24,6 +24,6 @@ export default async function OperationsPage() {
           <p className="text-medium">У вас пока нет операций</p>
         )}
       </div>
-    </div>
+    </>
   );
 }

@@ -7,17 +7,19 @@ import { lucia } from '@/auth';
 import { prisma } from '@/db';
 import { flattenValidationErrors, getAuthFormSchema, isEmpty } from '@/helpers';
 
-type ILogInFormFields = 'username' | 'password';
+interface ILogInFormValues {
+  username: string;
+  password: string;
+}
 
 interface ILogInResult {
-  errors?: Partial<Record<ILogInFormFields, string>>;
+  errors?: Partial<Record<keyof ILogInFormValues, string>>;
 }
 
 export const logIn = async (_: ILogInResult, formData: FormData): Promise<ILogInResult> => {
-  const { username, password } = Object.fromEntries(formData.entries()) as Record<
-    ILogInFormFields,
-    string
-  >;
+  const { username, password } = Object.fromEntries(
+    formData.entries(),
+  ) as unknown as ILogInFormValues;
 
   const validationResult = getAuthFormSchema().safeParse({ username, password });
 
