@@ -2,6 +2,7 @@
 
 import { FC } from 'react';
 import { useFormState } from 'react-dom';
+import { MdLogout } from 'react-icons/md';
 import { logOut } from '@/actions';
 import { SubmitButton } from '@atoms';
 import {
@@ -28,7 +29,7 @@ export const AccountInfo: FC<IAccountInfoProps> = ({ user }) => {
       <DropdownMenu>
         <DropdownItem key="log-out" className="p-0 data-[hover=true]:bg-transparent">
           <form action={logOutAction}>
-            <SubmitButton color="warning" fullWidth>
+            <SubmitButton startContent={<MdLogout />} color="warning" fullWidth>
               Выйти
             </SubmitButton>
           </form>

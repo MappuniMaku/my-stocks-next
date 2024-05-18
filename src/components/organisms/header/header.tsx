@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { MdLogin } from 'react-icons/md';
 import { getCurrentUser } from '@/auth';
 import { isNotEmpty } from '@/helpers';
 import { Button } from '@atoms';
@@ -34,7 +35,13 @@ export const Header: FC = async () => {
           {isNotEmpty(user) ? (
             <AccountInfo user={user} />
           ) : (
-            <Button as={Link} color="primary" href="/log-in" variant="flat">
+            <Button
+              as={Link}
+              startContent={<MdLogin />}
+              color="primary"
+              href="/log-in"
+              variant="flat"
+            >
               Войти
             </Button>
           )}

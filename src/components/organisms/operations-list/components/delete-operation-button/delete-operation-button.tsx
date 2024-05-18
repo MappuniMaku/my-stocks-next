@@ -2,6 +2,7 @@
 
 import { FC } from 'react';
 import { useFormState } from 'react-dom';
+import { MdDelete } from 'react-icons/md';
 import { deleteOperation } from '@/actions';
 import { SubmitButton } from '@atoms';
 
@@ -15,7 +16,9 @@ export const DeleteOperationButton: FC<IDeleteOperationButtonProps> = ({ operati
   return (
     <form action={submit}>
       <input type="hidden" name="operationId" value={operationId} />
-      <SubmitButton color="danger">Удалить</SubmitButton>
+      <SubmitButton color="danger" startContent={<MdDelete />}>
+        Удалить
+      </SubmitButton>
     </form>
   );
 };

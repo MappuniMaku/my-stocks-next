@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { MdEdit } from 'react-icons/md';
 import { prisma } from '@/db';
 import { isArrayNotEmpty } from '@/helpers';
 import { Button } from '@atoms';
@@ -23,24 +24,29 @@ export const OperationsList: FC<IOperationsListProps> = async ({ userId }) => {
     })) ?? {};
 
   return isArrayNotEmpty(operations) ? (
-    <ul className="flex flex-col gap-4 text-medium">
+    <ul className="flex flex-col gap-6 text-medium">
       {operations.map(({ id, date, amount, currency }, i) => (
-        <li key={id} className="flex gap-2">
-          <span className="font-semibold">{i + 1}.</span>
-          <span className="flex flex-col gap-1">
-            <span>
-              <span className="font-medium">Дата:</span> {date.toLocaleDateString()}
-            </span>
-            <span>
-              <span className="font-medium">Сумма:</span> {amount} {currency}
+        <li key={id} className="flex flex-col gap-4 sm:flex-row">
+          <span className="flex w-44 gap-2">
+            <span className="font-semibold">{i + 1}.</span>
+            <span className="flex flex-col gap-1">
+              <span>
+                <span className="font-medium">Дата:</span> {date.toLocaleDateString()}
+              </span>
+              <span>
+                <span className="font-medium">Сумма:</span> {amount} {currency}
+              </span>
             </span>
           </span>
-          <span className="ml-4 self-center">
-            <Button as={Link} href={`/portfolio/operations/${id}`} color="secondary">
+          <span className="flex gap-2">
+            <Button
+              startContent={<MdEdit />}
+              as={Link}
+              href={`/portfolio/operations/${id}`}
+              color="secondary"
+            >
               Редактировать
             </Button>
-          </span>
-          <span className="ml-1 self-center">
             <DeleteOperationButton operationId={id} />
           </span>
         </li>
