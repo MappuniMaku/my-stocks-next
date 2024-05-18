@@ -3,21 +3,23 @@
 import { FC } from 'react';
 import { useFormState } from 'react-dom';
 import { signUp } from '@/actions';
-import { isNotEmpty } from '@/helpers';
-import { Button, Input } from '@atoms';
+import { useFormErrors } from '@/hooks';
+import { Input, SubmitButton } from '@atoms';
 
 export const SignUpForm: FC = () => {
   const [{ errors }, submit] = useFormState(signUp, {});
 
+  const { clearErrors, hasError, getErrorMessage } = useFormErrors(errors);
+
   return (
-    <form action={submit} className="flex flex-col gap-5">
+    <form className="flex flex-col gap-5" action={submit} onChange={clearErrors}>
       <Input
         label="Имя пользователя"
         type="text"
         name="username"
         autoComplete="username"
-        errorMessage={errors?.username}
-        isInvalid={isNotEmpty(errors?.username)}
+        errorMessage={getErrorMessage('username')}
+        isInvalid={hasError('username')}
         isRequired
       />
       <Input
@@ -25,11 +27,11 @@ export const SignUpForm: FC = () => {
         type="password"
         name="password"
         autoComplete="new-password"
-        errorMessage={errors?.password}
-        isInvalid={isNotEmpty(errors?.password)}
+        errorMessage={getErrorMessage('password')}
+        isInvalid={hasError('password')}
         isRequired
       />
-      <Button type="submit">Зарегистрироваться</Button>
+      <SubmitButton>Зарегистрироваться</SubmitButton>
     </form>
   );
 };

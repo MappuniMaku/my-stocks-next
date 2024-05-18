@@ -3,8 +3,8 @@
 import { FC } from 'react';
 import { useFormState } from 'react-dom';
 import { createOperation } from '@/actions';
-import { isNotEmpty } from '@/helpers';
-import { Button, DatePicker, Input } from '@atoms';
+import { useFormErrors } from '@/hooks';
+import { DatePicker, Input, SubmitButton } from '@atoms';
 
 export interface IOperationFormProps {
   userId: string;
@@ -13,25 +13,27 @@ export interface IOperationFormProps {
 export const OperationForm: FC<IOperationFormProps> = ({ userId }) => {
   const [{ errors }, submit] = useFormState(createOperation, {});
 
+  const { clearErrors, hasError, getErrorMessage } = useFormErrors(errors);
+
   return (
-    <form action={submit} className="flex flex-col gap-5">
+    <form className="flex flex-col gap-5" action={submit} onChange={clearErrors}>
       <DatePicker
         label="Дата"
         name="date"
-        errorMessage={errors?.date}
-        isInvalid={isNotEmpty(errors?.date)}
+        errorMessage={getErrorMessage('date')}
+        isInvalid={hasError('date')}
         isRequired
       />
       <Input
         label="Сумма"
         type="number"
         name="amount"
-        errorMessage={errors?.amount}
-        isInvalid={isNotEmpty(errors?.amount)}
+        errorMessage={getErrorMessage('amount')}
+        isInvalid={hasError('amount')}
         isRequired
       />
       <input name="userid" value={userId} hidden readOnly />
-      <Button type="submit">Добавить</Button>
+      <SubmitButton>Добавить</SubmitButton>
     </form>
   );
 };

@@ -3,12 +3,18 @@
 import { FC } from 'react';
 import { useFormState } from 'react-dom';
 import { logOut } from '@/actions';
-import { Button } from '@atoms';
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, User } from '@nextui-org/react';
-import { IUser } from '@types';
+import { SubmitButton } from '@atoms';
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  User as UserComponent,
+} from '@nextui-org/react';
+import { User } from '@prisma/client';
 
 export interface IAccountInfoProps {
-  user: IUser;
+  user: User;
 }
 
 export const AccountInfo: FC<IAccountInfoProps> = ({ user }) => {
@@ -17,14 +23,14 @@ export const AccountInfo: FC<IAccountInfoProps> = ({ user }) => {
   return (
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
-        <User name={user.username} className="cursor-pointer" />
+        <UserComponent name={user.username} className="cursor-pointer" />
       </DropdownTrigger>
       <DropdownMenu>
         <DropdownItem key="log-out" className="p-0 data-[hover=true]:bg-transparent">
           <form action={logOutAction}>
-            <Button type="submit" color="warning" fullWidth>
+            <SubmitButton color="warning" fullWidth>
               Выйти
-            </Button>
+            </SubmitButton>
           </form>
         </DropdownItem>
       </DropdownMenu>

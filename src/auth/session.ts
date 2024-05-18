@@ -1,14 +1,14 @@
 import { cache } from 'react';
-import type { Session, User } from 'lucia';
+import type { Session, User as AuthUser } from 'lucia';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { lucia } from '@/auth/auth';
 import { prisma } from '@/db';
 import { isEmpty } from '@/helpers';
-import { IUser } from '@types';
+import { User } from '@prisma/client';
 
 export const getCurrentSession = cache(
-  async (): Promise<{ user: User; session: Session } | { user: null; session: null }> => {
+  async (): Promise<{ user: AuthUser; session: Session } | { user: null; session: null }> => {
     const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
     if (!sessionId) {
       return {
@@ -33,7 +33,7 @@ export const getCurrentSession = cache(
   },
 );
 
-export const getCurrentUser = cache(async (): Promise<IUser | null> => {
+export const getCurrentUser = cache(async (): Promise<User | null> => {
   try {
     const { user } = await getCurrentSession();
     if (isEmpty(user)) {
@@ -50,10 +50,12 @@ export const getCurrentUser = cache(async (): Promise<IUser | null> => {
   }
 });
 
-export const redirectUnauthorizedUser = async (): Promise<void> => {
+export const redirectUnauthorizedUser = async (): Promise<string> => {
   const { user } = await getCurrentSession();
 
   if (isEmpty(user)) {
     redirect('/log-in');
   }
+
+  return user.id;
 };

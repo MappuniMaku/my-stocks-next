@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { DEFAULT_CURRENCY } from '@/constants/misc';
@@ -49,5 +50,6 @@ export const createOperation = async (
     },
   });
 
+  revalidatePath('/portfolio');
   return redirect('/portfolio/operations');
 };

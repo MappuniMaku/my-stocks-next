@@ -1,18 +1,23 @@
-import { getCurrentUser, redirectUnauthorizedUser } from '@/auth';
+import { redirectUnauthorizedUser } from '@/auth';
 import { prisma } from '@/db';
 import { isArrayNotEmpty } from '@/helpers';
 import { Button } from '@atoms';
 import { Link } from '@nextui-org/react';
-import { IUser } from '@types';
 
 export default async function OperationsPage() {
-  await redirectUnauthorizedUser();
+  const userId = await redirectUnauthorizedUser();
 
-  const user = (await getCurrentUser()) as IUser;
-  const operations = await prisma.operation.findMany({
-    where: { userId: user.id },
-    orderBy: { date: 'desc' },
-  });
+  const { operations } =
+    (await prisma.user.findFirst({
+      where: { id: userId },
+      include: {
+        operations: {
+          orderBy: {
+            date: 'desc',
+          },
+        },
+      },
+    })) ?? {};
 
   return (
     <>
