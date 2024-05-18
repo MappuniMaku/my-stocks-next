@@ -29,26 +29,31 @@ export const logIn = async (_: ILogInResult, formData: FormData): Promise<ILogIn
     };
   }
 
-  const existingUser = await prisma.user.findFirst({ where: { username } });
-  if (isEmpty(existingUser)) {
-    return {
-      errors: {
-        username: 'Пользователь с таким именем не найден',
-      },
-    };
+  try {
+    const existingUser = await prisma.user.findFirst({ where: { username } });
+    if (isEmpty(existingUser)) {
+      return {
+        errors: {
+          username: 'Пользователь с таким именем не найден',
+        },
+      };
+    }
+
+    const validPassword = await new Argon2id().verify(existingUser.hashedPassword, password);
+    if (!validPassword) {
+      return {
+        errors: {
+          password: 'Неверный пароль',
+        },
+      };
+    }
+
+    const session = await lucia.createSession(existingUser.id, {});
+    const sessionCookie = lucia.createSessionCookie(session.id);
+    cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+  } catch (err) {
+    console.error('Error in logIn action', err);
   }
 
-  const validPassword = await new Argon2id().verify(existingUser.hashedPassword, password);
-  if (!validPassword) {
-    return {
-      errors: {
-        password: 'Неверный пароль',
-      },
-    };
-  }
-
-  const session = await lucia.createSession(existingUser.id, {});
-  const sessionCookie = lucia.createSessionCookie(session.id);
-  cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-  return redirect('/portfolio');
+  redirect('/portfolio');
 };

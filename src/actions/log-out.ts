@@ -5,14 +5,19 @@ import { redirect } from 'next/navigation';
 import { getCurrentSession, lucia } from '@/auth';
 
 export const logOut = async (): Promise<void> => {
-  const { session } = await getCurrentSession();
-  if (!session) {
-    return;
+  try {
+    const { session } = await getCurrentSession();
+    if (!session) {
+      return;
+    }
+
+    await lucia.invalidateSession(session.id);
+
+    const sessionCookie = lucia.createBlankSessionCookie();
+    cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+  } catch (err) {
+    console.error('Error in logOut action', err);
   }
 
-  await lucia.invalidateSession(session.id);
-
-  const sessionCookie = lucia.createBlankSessionCookie();
-  cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-  return redirect('/log-in');
+  redirect('/log-in');
 };

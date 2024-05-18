@@ -41,15 +41,20 @@ export const createOperation = async (
     };
   }
 
-  await prisma.operation.create({
-    data: {
-      date: new Date(date),
-      amount: Number(amount),
-      currency: DEFAULT_CURRENCY,
-      userId: userid,
-    },
-  });
+  try {
+    await prisma.operation.create({
+      data: {
+        date: new Date(date),
+        amount: Number(amount),
+        currency: DEFAULT_CURRENCY,
+        userId: userid,
+      },
+    });
 
-  revalidatePath('/portfolio');
-  return redirect('/portfolio/operations');
+    revalidatePath('/portfolio');
+  } catch (err) {
+    console.error('Error in createOperation action', err);
+  }
+
+  redirect('/portfolio/operations');
 };
