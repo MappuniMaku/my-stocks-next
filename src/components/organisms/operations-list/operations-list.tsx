@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { prisma } from '@/db';
 import { isArrayNotEmpty } from '@/helpers';
+import { DeleteOperationButton } from './components';
 
 export interface IOperationsListProps {
   userId: string;
@@ -21,16 +22,19 @@ export const OperationsList: FC<IOperationsListProps> = async ({ userId }) => {
 
   return isArrayNotEmpty(operations) ? (
     <ul className="flex flex-col gap-4 text-medium">
-      {operations.map((operation, i) => (
-        <li key={operation.id} className="flex gap-2">
+      {operations.map(({ id, date, amount, currency }, i) => (
+        <li key={id} className="flex gap-2">
           <span className="font-semibold">{i + 1}.</span>
           <span className="flex flex-col gap-1">
             <span>
-              <span className="font-medium">Дата:</span> {operation.date.toLocaleDateString()}
+              <span className="font-medium">Дата:</span> {date.toLocaleDateString()}
             </span>
             <span>
-              <span className="font-medium">Сумма:</span> {operation.amount} {operation.currency}
+              <span className="font-medium">Сумма:</span> {amount} {currency}
             </span>
+          </span>
+          <span className="ml-4 self-center">
+            <DeleteOperationButton operationId={id} />
           </span>
         </li>
       ))}

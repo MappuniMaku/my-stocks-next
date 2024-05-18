@@ -10,3 +10,5 @@ export const isStringNotEmpty = <T extends string>(
 
 export const isArrayNotEmpty = <T>(array: T[] | null | undefined): array is T[] =>
   Array.isArray(array) && array.length > 0;
+
+export const parseFormData = <T>(formData: FormData) => Object.fromEntries(formData.entries()) as T;

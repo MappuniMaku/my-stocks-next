@@ -32,7 +32,7 @@ export const OperationForm: FC<IOperationFormProps> = ({ userId }) => {
         isInvalid={hasError('amount')}
         isRequired
       />
-      <input name="userid" value={userId} hidden readOnly />
+      <input type="hidden" name="userid" value={userId} />
       <SubmitButton>Добавить</SubmitButton>
     </form>
   );

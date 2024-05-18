@@ -3,9 +3,15 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { DEFAULT_CURRENCY } from '@/constants/misc';
+import { DEFAULT_CURRENCY } from '@/constants';
 import { prisma } from '@/db';
-import { flattenValidationErrors, isStringNotEmpty, requiredDate, requiredNumber } from '@/helpers';
+import {
+  flattenValidationErrors,
+  isStringNotEmpty,
+  parseFormData,
+  requiredDate,
+  requiredNumber,
+} from '@/helpers';
 
 interface ICreateOperationFormValues {
   date: string;
@@ -21,9 +27,7 @@ export const createOperation = async (
   _: ICreateOperationResult,
   formData: FormData,
 ): Promise<ICreateOperationResult> => {
-  const { date, amount, userid } = Object.fromEntries(
-    formData.entries(),
-  ) as unknown as ICreateOperationFormValues;
+  const { date, amount, userid } = parseFormData<ICreateOperationFormValues>(formData);
 
   const validationResult = z
     .object({
@@ -50,7 +54,6 @@ export const createOperation = async (
         userId: userid,
       },
     });
-
     revalidatePath('/portfolio');
   } catch (err) {
     console.error('Error in createOperation action', err);

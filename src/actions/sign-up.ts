@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 import { Argon2id } from 'oslo/password';
 import { lucia } from '@/auth';
 import { prisma } from '@/db';
-import { flattenValidationErrors, getAuthFormSchema, isNotEmpty } from '@/helpers';
+import { flattenValidationErrors, getAuthFormSchema, isNotEmpty, parseFormData } from '@/helpers';
 
 interface ISignUpFormValues {
   username: string;
@@ -18,9 +18,7 @@ interface ISignUpResult {
 }
 
 export const signUp = async (_: ISignUpResult, formData: FormData): Promise<ISignUpResult> => {
-  const { username, password } = Object.fromEntries(
-    formData.entries(),
-  ) as unknown as ISignUpFormValues;
+  const { username, password } = parseFormData<ISignUpFormValues>(formData);
 
   const validationResult = getAuthFormSchema().safeParse({ username, password });
 
