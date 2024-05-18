@@ -12,22 +12,25 @@ import {
   requiredDate,
   requiredNumber,
 } from '@/helpers';
+import { Operation } from '@prisma/client';
 
-interface ICreateOperationFormValues {
+interface IProcessOperationFormValues {
   date: string;
   amount: string;
-  userid: string;
+  userId: string;
+  operationId?: string;
 }
 
-interface ICreateOperationResult {
-  errors?: Partial<Record<keyof ICreateOperationFormValues, string>>;
+interface IProcessOperationResult {
+  errors?: Partial<Record<keyof IProcessOperationFormValues, string>>;
 }
 
-export const createOperation = async (
-  _: ICreateOperationResult,
+export const processOperation = async (
+  _: IProcessOperationResult,
   formData: FormData,
-): Promise<ICreateOperationResult> => {
-  const { date, amount, userid } = parseFormData<ICreateOperationFormValues>(formData);
+): Promise<IProcessOperationResult> => {
+  const { date, amount, userId, operationId } =
+    parseFormData<IProcessOperationFormValues>(formData);
 
   const validationResult = z
     .object({
@@ -46,14 +49,20 @@ export const createOperation = async (
   }
 
   try {
-    await prisma.operation.create({
-      data: {
-        date: new Date(date),
-        amount: Number(amount),
-        currency: DEFAULT_CURRENCY,
-        userId: userid,
-      },
-    });
+    const isEditing = isStringNotEmpty(operationId);
+
+    const payload: Omit<Operation, 'id'> = {
+      date: new Date(date),
+      amount: Number(amount),
+      currency: DEFAULT_CURRENCY,
+      userId,
+    };
+
+    if (isEditing) {
+      await prisma.operation.update({ where: { id: operationId }, data: payload });
+    } else {
+      await prisma.operation.create({ data: payload });
+    }
     revalidatePath('/portfolio');
   } catch (err) {
     console.error('Error in createOperation action', err);

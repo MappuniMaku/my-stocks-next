@@ -7,5 +7,5 @@ import { Button, IButtonProps } from '@atoms';
 export const SubmitButton: FC<Omit<IButtonProps, 'type' | 'isLoading'>> = (props) => {
   const { pending } = useFormStatus();
 
-  return <Button {...props} type="submit" isLoading={pending} />;
+  return <Button color="primary" {...props} type="submit" isLoading={pending} />;
 };

@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import { prisma } from '@/db';
 import { isArrayNotEmpty } from '@/helpers';
+import { Button } from '@atoms';
+import { Link } from '@nextui-org/react';
 import { DeleteOperationButton } from './components';
 
 export interface IOperationsListProps {
@@ -34,6 +36,11 @@ export const OperationsList: FC<IOperationsListProps> = async ({ userId }) => {
             </span>
           </span>
           <span className="ml-4 self-center">
+            <Button as={Link} href={`/portfolio/operations/${id}`} color="secondary">
+              Редактировать
+            </Button>
+          </span>
+          <span className="ml-1 self-center">
             <DeleteOperationButton operationId={id} />
           </span>
         </li>
