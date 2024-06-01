@@ -6,19 +6,16 @@ import { redirect } from 'next/navigation';
 import { Argon2id } from 'oslo/password';
 import { lucia } from '@/auth';
 import { prisma } from '@/db';
-import { flattenValidationErrors, getAuthFormSchema, isNotEmpty, parseFormData } from '@/helpers';
+import { flattenValidationErrors, getAuthFormSchema, isNotEmpty } from '@/helpers';
+import { IServerFormAction } from '@/hooks';
 
-interface ISignUpFormValues {
+export interface ISignUpFormValues {
   username: string;
   password: string;
 }
 
-interface ISignUpResult {
-  errors?: Partial<Record<keyof ISignUpFormValues, string>>;
-}
-
-export const signUp = async (_: ISignUpResult, formData: FormData): Promise<ISignUpResult> => {
-  const { username, password } = parseFormData<ISignUpFormValues>(formData);
+export const signUp: IServerFormAction<ISignUpFormValues> = async (values) => {
+  const { username, password } = values;
 
   const validationResult = getAuthFormSchema().safeParse({ username, password });
 

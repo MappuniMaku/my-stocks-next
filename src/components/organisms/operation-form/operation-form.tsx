@@ -2,7 +2,7 @@
 
 import { FC } from 'react';
 import { processOperation } from '@/actions';
-import { isNotEmpty } from '@/helpers';
+import { getInputChangeHandler, isNotEmpty } from '@/helpers';
 import { useFormErrors, useServerForm } from '@/hooks';
 import { Input, SubmitButton } from '@atoms';
 import { Operation } from '@prisma/client';
@@ -21,8 +21,9 @@ export const OperationForm: FC<IOperationFormProps> = ({ userId, operation }) =>
   const { clearErrors, hasError, getErrorMessage } = useFormErrors(errors);
 
   const { date, amount } = values;
-
   const isEditing = isNotEmpty(operation);
+
+  const handleChange = getInputChangeHandler(setValues);
 
   return (
     <form className="flex flex-col gap-5" action={submit} onChange={clearErrors}>
@@ -33,7 +34,7 @@ export const OperationForm: FC<IOperationFormProps> = ({ userId, operation }) =>
         errorMessage={getErrorMessage('date')}
         isInvalid={hasError('date')}
         isRequired
-        onChange={(e) => setValues((prevState) => ({ ...prevState, date: e.target.value }))}
+        onChange={handleChange('date')}
       />
       <Input
         label="Сумма"
@@ -42,7 +43,7 @@ export const OperationForm: FC<IOperationFormProps> = ({ userId, operation }) =>
         errorMessage={getErrorMessage('amount')}
         isInvalid={hasError('amount')}
         isRequired
-        onChange={(e) => setValues((prevState) => ({ ...prevState, amount: e.target.value }))}
+        onChange={handleChange('amount')}
       />
       <SubmitButton>{isEditing ? 'Сохранить' : 'Добавить'}</SubmitButton>
     </form>

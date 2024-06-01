@@ -27,7 +27,7 @@ export const OperationsList: FC<IOperationsListProps> = async ({ userId }) => {
     <ul className="flex flex-col gap-6 text-medium">
       {operations.map(({ id, date, amount, currency }, i) => (
         <li key={id} className="flex flex-col gap-4 sm:flex-row">
-          <span className="flex w-44 gap-2">
+          <span className="flex w-56 gap-2">
             <span className="font-semibold">{i + 1}.</span>
             <span className="flex flex-col gap-1">
               <span>

@@ -2,14 +2,14 @@
 
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/db';
-import { parseFormData } from '@/helpers';
+import { IServerFormAction } from '@/hooks';
 
-interface IDeleteOperationFormValues {
+export interface IDeleteOperationFormValues {
   operationId: string;
 }
 
-export const deleteOperation = async (_: void, formData: FormData): Promise<void> => {
-  const { operationId } = parseFormData<IDeleteOperationFormValues>(formData);
+export const deleteOperation: IServerFormAction<IDeleteOperationFormValues> = async (values) => {
+  const { operationId } = values;
 
   try {
     await prisma.operation.delete({ where: { id: operationId } });
@@ -17,4 +17,6 @@ export const deleteOperation = async (_: void, formData: FormData): Promise<void
   } catch (err) {
     console.error('Error in deleteOperation action', err);
   }
+
+  return {};
 };
