@@ -33,9 +33,8 @@ export const getCurrentSession = cache(
   },
 );
 
-export const getCurrentUser = cache(async (): Promise<User | null> => {
+export const getCurrentUser = cache(async (user: AuthUser | null): Promise<User | null> => {
   try {
-    const { user } = await getCurrentSession();
     if (isEmpty(user)) {
       return null;
     }

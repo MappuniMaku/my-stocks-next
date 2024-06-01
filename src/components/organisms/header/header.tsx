@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { MdLogin } from 'react-icons/md';
-import { getCurrentUser } from '@/auth';
+import { getCurrentSession, getCurrentUser } from '@/auth';
 import { isNotEmpty } from '@/helpers';
 import { Button } from '@atoms';
 import {
@@ -15,7 +15,7 @@ import { AccountInfo, HeaderMenu, SidebarMenu } from './components';
 import { menuItems } from './constants';
 
 export const Header: FC = async () => {
-  const user = await getCurrentUser();
+  const user = await getCurrentUser((await getCurrentSession()).user);
 
   return (
     <Navbar isBordered>
