@@ -5,32 +5,19 @@ import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { DEFAULT_CURRENCY } from '@/constants';
 import { prisma } from '@/db';
-import {
-  flattenValidationErrors,
-  isStringNotEmpty,
-  parseFormData,
-  requiredDate,
-  requiredNumber,
-} from '@/helpers';
+import { flattenValidationErrors, isStringNotEmpty, requiredDate, requiredNumber } from '@/helpers';
+import { IServerFormAction } from '@/hooks';
 import { Operation } from '@prisma/client';
 
-interface IProcessOperationFormValues {
+export interface IProcessOperationFormValues {
   date: string;
   amount: string;
   userId: string;
   operationId?: string;
 }
 
-interface IProcessOperationResult {
-  errors?: Partial<Record<keyof IProcessOperationFormValues, string>>;
-}
-
-export const processOperation = async (
-  _: IProcessOperationResult,
-  formData: FormData,
-): Promise<IProcessOperationResult> => {
-  const { date, amount, userId, operationId } =
-    parseFormData<IProcessOperationFormValues>(formData);
+export const processOperation: IServerFormAction<IProcessOperationFormValues> = async (values) => {
+  const { date, amount, userId, operationId } = values;
 
   const validationResult = z
     .object({

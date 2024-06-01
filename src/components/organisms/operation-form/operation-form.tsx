@@ -1,12 +1,12 @@
 'use client';
 
 import { FC } from 'react';
-import { useFormState } from 'react-dom';
 import { processOperation } from '@/actions';
-import { getShortDateString, isNotEmpty } from '@/helpers';
-import { useFormErrors } from '@/hooks';
+import { isNotEmpty } from '@/helpers';
+import { useFormErrors, useServerForm } from '@/hooks';
 import { Input, SubmitButton } from '@atoms';
 import { Operation } from '@prisma/client';
+import { getDefaultValues } from './helpers';
 
 export interface IOperationFormProps {
   userId: string;
@@ -14,9 +14,13 @@ export interface IOperationFormProps {
 }
 
 export const OperationForm: FC<IOperationFormProps> = ({ userId, operation }) => {
-  const [{ errors }, submit] = useFormState(processOperation, {});
-
+  const { values, setValues, errors, submit } = useServerForm({
+    action: processOperation,
+    getDefaultValues: () => getDefaultValues(userId, operation),
+  });
   const { clearErrors, hasError, getErrorMessage } = useFormErrors(errors);
+
+  const { date, amount } = values;
 
   const isEditing = isNotEmpty(operation);
 
@@ -25,23 +29,21 @@ export const OperationForm: FC<IOperationFormProps> = ({ userId, operation }) =>
       <Input
         label="Дата"
         type="date"
-        name="date"
-        defaultValue={isEditing ? getShortDateString(operation.date) : undefined}
+        value={date}
         errorMessage={getErrorMessage('date')}
         isInvalid={hasError('date')}
         isRequired
+        onChange={(e) => setValues((prevState) => ({ ...prevState, date: e.target.value }))}
       />
       <Input
         label="Сумма"
         type="number"
-        name="amount"
-        defaultValue={isEditing ? String(operation.amount) : undefined}
+        value={amount}
         errorMessage={getErrorMessage('amount')}
         isInvalid={hasError('amount')}
         isRequired
+        onChange={(e) => setValues((prevState) => ({ ...prevState, amount: e.target.value }))}
       />
-      <input type="hidden" name="userId" value={userId} />
-      <input type="hidden" name="operationId" value={operation?.id} />
       <SubmitButton>{isEditing ? 'Сохранить' : 'Добавить'}</SubmitButton>
     </form>
   );
