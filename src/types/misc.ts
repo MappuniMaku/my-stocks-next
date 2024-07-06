@@ -6,3 +6,8 @@ export interface IMenuItem {
 }
 
 export type IInputChangeHandler<T> = (field: keyof T) => (e: ChangeEvent<HTMLInputElement>) => void;
+
+export interface IPrice {
+  amount: number;
+  currency: string;
+}
