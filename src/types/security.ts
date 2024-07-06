@@ -8,6 +8,7 @@ export type ISecurityType =
   | 'common_share'
   | 'preferred_share'
   | 'ofz_bond'
+  | 'exchange_bond'
   | 'exchange_ppif'
   | 'etf_ppif';
 
@@ -45,4 +46,11 @@ export interface ISecuritySpecification extends ISecurity {
   isForQualifiedInvestors: boolean;
   price?: number;
   currency: string;
+}
+
+export interface IGetSecuritiesResponse {
+  securities: {
+    columns: string[];
+    data: Array<never[]>;
+  };
 }

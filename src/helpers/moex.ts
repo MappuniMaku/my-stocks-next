@@ -1,7 +1,9 @@
 import { NOT_FOUND_CODE } from '@/constants';
 import {
+  IGetSecuritiesResponse,
   IGetSecurityMetaDataResponse,
   IGetSecuritySpecificationResponse,
+  ISecurity,
   ISecurityMetaData,
   ISecuritySpecification,
   ISecurityType,
@@ -9,7 +11,7 @@ import {
 
 export const queryMoex = async <T>(url: string): Promise<T> => {
   const baseUrl = 'https://iss.moex.com/iss';
-  const result = await fetch(`${baseUrl}/${url}.json`);
+  const result = await fetch(`${baseUrl}/${url}`);
 
   if (!result.ok) {
     throw new Error(result.statusText);
@@ -53,7 +55,7 @@ export const getValueFromColumnsData = (
 };
 
 export const getSecurityMetaData = async (ticker: string): Promise<ISecurityMetaData> => {
-  const response = await queryMoex<IGetSecurityMetaDataResponse>(`securities/${ticker}`);
+  const response = await queryMoex<IGetSecurityMetaDataResponse>(`securities/${ticker}.json`);
   const {
     description: { data: descriptionData },
     boards: { columns: boardsColumns, data: boardsData },
@@ -80,7 +82,7 @@ export const getSecuritySpecification = async (ticker: string): Promise<ISecurit
   const { engine, market, boardId, currency, descriptionData } = await getSecurityMetaData(ticker);
 
   const marketResponse = await queryMoex<IGetSecuritySpecificationResponse>(
-    `engines/${engine}/markets/${market}/securities/${ticker}`,
+    `engines/${engine}/markets/${market}/securities/${ticker}.json`,
   );
   const { columns: marketColumns, data: marketData } = marketResponse?.marketdata ?? {};
   const primaryMarketDataRow =
@@ -105,9 +107,26 @@ export const getSecuritySpecification = async (ticker: string): Promise<ISecurit
     currency,
   };
 
-  if (result.type === 'ofz_bond' && result.price !== undefined) {
+  const bondSecurityTypes: ISecurityType[] = ['ofz_bond', 'exchange_bond'];
+  if (bondSecurityTypes.includes(result.type) && result.price !== undefined) {
     result.price = result.price * 10;
   }
 
   return result;
+};
+
+export const getSecurities = async (search: string, limit: number): Promise<ISecurity[]> => {
+  const result = await queryMoex<IGetSecuritiesResponse>(
+    `securities.json?q=${search}&limit=${limit}&is_trading=1`,
+  );
+  const { columns, data } = result?.securities ?? {};
+  return data
+    .map((row) => {
+      return {
+        secid: getValueFromColumnsData(columns, row, 'secid') as string,
+        name: getValueFromColumnsData(columns, row, 'name') as string,
+        isin: getValueFromColumnsData(columns, row, 'isin') as string,
+      };
+    })
+    .filter((item) => item.isin !== undefined);
 };

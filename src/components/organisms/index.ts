@@ -5,3 +5,4 @@ export * from './operation-form';
 export * from './operations-list';
 export * from './edit-operation';
 export * from './security-info';
+export * from './security-select';

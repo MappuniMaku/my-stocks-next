@@ -6,9 +6,9 @@ export default async function SecurityPage({ params: { ticker } }: { params: { t
 
   return (
     <>
-      <h1 className="text-3xl font-semibold">Информация о ценной бумаге {uppercaseTicker}</h1>
+      <h1 className="text-3xl font-semibold">Информация по ценной бумаге {uppercaseTicker}</h1>
       <div className="mt-6">
-        <Suspense fallback={<p>Загружаем информацию о ценной бумаге...</p>}>
+        <Suspense fallback={<p>Загружаем данные...</p>}>
           <SecurityInfo ticker={uppercaseTicker} />
         </Suspense>
       </div>
