@@ -41,4 +41,4 @@ jobs:
             docker pull $DOCKERHUB_USERNAME/my-stocks-next:latest
             docker stop my-stocks-next || true
             docker rm my-stocks-next || true
-            docker run -d --name my-stocks-next -p 3000:3000 -e DATABASE_URL=$DATABASE_URL $DOCKERHUB_USERNAME/my-stocks-next:latest
+            docker run -d -it --name my-stocks-next -p 3000:3000 -e DATABASE_URL=$DATABASE_URL $DOCKERHUB_USERNAME/my-stocks-next:latest
