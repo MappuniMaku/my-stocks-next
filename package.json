@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "concurrently \"next dev\" \"tsc --noEmit --watch\"",
     "build": "next build",
-    "start": "next start",
+    "start": "npx prisma db push && next start",
     "generate": "prisma generate",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{js,jsx,css,json,ts,tsx}\"",
